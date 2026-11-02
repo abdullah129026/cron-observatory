@@ -595,6 +595,10 @@ stands (small, atomic, real work only, no padding).
 
 ## Decisions needed (Abdullah answers before approval)
 
+**Approved 2026-11-02:** Abdullah approved all six as proposed, per the
+agent's recommendations (approve on 1-4 and 6; 5 approved vendored for
+v1, npm publish deferred to post-launch).
+
 1. Free limits: propose 10 jobs per account, success runs kept 30 days,
    failure/missed runs kept 90 days, one Slack webhook per project.
    Approve, or set different numbers?
