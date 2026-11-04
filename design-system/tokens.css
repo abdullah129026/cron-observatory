@@ -1,0 +1,72 @@
+/* Cron Job Observatory — design tokens (phase-2).
+   Every component in components.css references these tokens only.
+   Values are locked by DESIGN.md section 2. Change them there first. */
+
+/* ---------- color ---------- */
+
+:root {
+  --bg: #0A0D13;        /* page ground */
+  --surface: #10151E;   /* cards, table body */
+  --raised: #161C28;    /* modals, popovers, hover rows */
+  --ink: #E9EDF3;       /* primary text */
+  --ink-2: #A7B0BE;     /* secondary text */
+  --ink-3: #8A94A3;     /* faint text, placeholder */
+  --line: #222B3B;      /* 1px hairlines, borders */
+
+  /* state colors, data only, never chrome */
+  --up: #34D399;
+  --late: #FBBF24;
+  --down: #F87171;
+  --new: #6B7280;
+
+  /* focus ring only, never data */
+  --focus: #7DD3FC;
+
+  /* soft tints for banners and badges (full hairline borders, never one-sided) */
+  --up-tint: rgba(52, 211, 153, 0.08);
+  --late-tint: rgba(251, 191, 36, 0.08);
+  --down-tint: rgba(248, 113, 113, 0.08);
+  --new-tint: rgba(107, 114, 128, 0.12);
+  --focus-tint: rgba(125, 211, 252, 0.08);
+
+  /* ---------- type ---------- */
+
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --text-display: clamp(40px, 6vw, 64px);
+  --text-title: 24px;
+  --text-section: 16px;
+  --text-body: 14px;
+  --text-table: 13px;
+  --text-caption: 12px;
+
+  --weight-body: 400;
+  --weight-strong: 600;
+
+  /* ---------- spacing ---------- */
+
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-12: 48px;
+
+  /* ---------- shape ---------- */
+
+  --radius: 6px;      /* cards, inputs, buttons */
+  --radius-pill: 999px; /* status dots, pills */
+
+  /* the only shadow in the system: modals and popovers */
+  --shadow-modal: 0 16px 48px rgba(0, 0, 0, 0.5);
+
+  /* ---------- motion ---------- */
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --dur-fast: 150ms;   /* button press, hover */
+  --dur-med: 220ms;    /* dropdowns, popovers, toasts */
+  --dur-slow: 300ms;   /* modal, drawer */
+}

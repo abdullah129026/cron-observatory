@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cron Job Observatory — Design System (phase-2)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="components.css">
+<style>
+  /* gallery chrome only, not part of the component system */
+  .gallery { max-width: 1080px; margin: 0 auto; padding: 48px 24px 96px; display: grid; gap: 64px; }
+  .gallery-top { display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    position: sticky; top: 0; z-index: 40; background: var(--bg);
+    padding: 16px 0; border-bottom: 1px solid var(--line); }
+  .gallery-nav { display: flex; gap: 4px; flex-wrap: wrap; }
+  .gallery-nav a { font-size: 12px; color: var(--ink-3); text-decoration: none; padding: 6px 10px; border-radius: 999px; }
+  .gallery-nav a:hover { color: var(--ink); background: var(--raised); }
+  .sec { display: grid; gap: 24px; scroll-margin-top: 90px; }
+  .sec-head { display: grid; gap: 4px; }
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+  .swatch { border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--surface); }
+  .swatch-color { height: 56px; }
+  .swatch-meta { padding: 8px 12px; font-size: 12px; }
+  .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .demo-grid { display: grid; gap: 16px; }
+  .demo-label { font-size: 12px; color: var(--ink-3); font-family: var(--font-mono); }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+  .stack { display: grid; gap: 8px; }
+  .type-spec { display: grid; gap: 2px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+</style>
+</head>
+<body>
+<div class="gallery">
+
+  <header class="gallery-top">
+    <div>
+      <div class="section-title">Cron Job Observatory</div>
+      <div class="caption">Design system, phase-2. Tokens locked by DESIGN.md. Every state pinned below.</div>
+    </div>
+    <nav class="gallery-nav" aria-label="Sections">
+      <a href="#tokens">Tokens</a><a href="#buttons">Buttons</a><a href="#forms">Forms</a>
+      <a href="#status">Status</a><a href="#ticks">Ticks</a><a href="#table">Table</a>
+      <a href="#stats">Stats</a><a href="#banners">Banners</a><a href="#modal">Modal</a>
+      <a href="#toast">Toast</a><a href="#code">Code</a><a href="#empty">Empty</a>
+    </nav>
+  </header>
+
+  <!-- ================= TOKENS ================= -->
+  <section class="sec" id="tokens">
+    <div class="sec-head">
+      <h2 class="title">Tokens</h2>
+      <p class="caption">Exact values from DESIGN.md section 2. Components reference tokens only, never raw hex.</p>
+    </div>
+    <div class="swatches">
+      <div class="swatch"><div class="swatch-color" style="background:#0A0D13"></div><div class="swatch-meta"><div class="mono">--bg #0A0D13</div><div class="faint">page ground</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#10151E"></div><div class="swatch-meta"><div class="mono">--surface #10151E</div><div class="faint">cards, table body</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#161C28"></div><div class="swatch-meta"><div class="mono">--raised #161C28</div><div class="faint">modals, hover rows</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#E9EDF3"></div><div class="swatch-meta"><div class="mono">--ink #E9EDF3</div><div class="faint">primary text</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#A7B0BE"></div><div class="swatch-meta"><div class="mono">--ink-2 #A7B0BE</div><div class="faint">secondary text</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#8A94A3"></div><div class="swatch-meta"><div class="mono">--ink-3 #8A94A3</div><div class="faint">faint, placeholder</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#222B3B"></div><div class="swatch-meta"><div class="mono">--line #222B3B</div><div class="faint">hairlines</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#34D399"></div><div class="swatch-meta"><div class="mono">--up #34D399</div><div class="faint">data: up</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#FBBF24"></div><div class="swatch-meta"><div class="mono">--late #FBBF24</div><div class="faint">data: late</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#F87171"></div><div class="swatch-meta"><div class="mono">--down #F87171</div><div class="faint">data: down</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#6B7280"></div><div class="swatch-meta"><div class="mono">--new #6B7280</div><div class="faint">data: new</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#7DD3FC"></div><div class="swatch-meta"><div class="mono">--focus #7DD3FC</div><div class="faint">focus ring only</div></div></div>
+    </div>
+    <div class="demo-grid">
+      <div class="type-spec"><span class="display">Night watch</span><span class="demo-label">display clamp(40,6vw,64) 600 -0.03em, landing hero only</span></div>
+      <div class="type-spec"><span class="title">Job detail</span><span class="demo-label">title 24 600 -0.01em</span></div>
+      <div class="type-spec"><span class="section-title">Run history</span><span class="demo-label">section 16 600</span></div>
+      <div class="type-spec"><span>This is body text at 14px. The dashboard reads dense because nothing fights for attention.</span><span class="demo-label">body 14 400 (16 on landing)</span></div>
+      <div class="type-spec"><span style="font-size:13px">backup-nightly ran in 42s</span><span class="demo-label">table 13 400, mono for machine text</span></div>
+      <div class="type-spec"><span class="caption">Waiting for the first ping from this project.</span><span class="demo-label">caption 12 400, hints and empty states</span></div>
+      <div class="type-spec"><span class="mono tabular" style="font-size:13px">0 3 * * * &nbsp;·&nbsp; 42s &nbsp;·&nbsp; 2026-11-04 03:00:07</span><span class="demo-label">jetbrains mono 400/500/600 for cron, timestamps, durations, keys</span></div>
+    </div>
+  </section>
+
+  <!-- ================= BUTTONS ================= -->
+  <section class="sec" id="buttons">
+    <div class="sec-head">
+      <h2 class="title">Buttons</h2>
+      <p class="caption">Primary is ink-filled so green and red stay reserved for data. Press feedback is a 150ms scale to 0.97. Focus is always the --focus ring.</p>
+    </div>
+    <div class="demo-grid">
+      <div><div class="demo-label">variants</div>
+        <div class="row">
+          <button class="btn">Create project</button>
+          <button class="btn btn-secondary">View logs</button>
+          <button class="btn btn-danger">Revoke key</button>
+          <button class="btn btn-text">Cancel</button>
+        </div></div>
+      <div><div class="demo-label">pinned states: hover / active / focus / disabled / loading</div>
+        <div class="row">
+          <button class="btn is-hover">Hover</button>
+          <button class="btn is-active">Active</button>
+          <button class="btn is-focus">Focus</button>
+          <button class="btn" disabled>Disabled</button>
+          <button class="btn is-loading">Saving</button>
+        </div></div>
+      <div><div class="demo-label">secondary pinned states</div>
+        <div class="row">
+          <button class="btn btn-secondary is-hover">Hover</button>
+          <button class="btn btn-secondary is-focus">Focus</button>
+          <button class="btn btn-secondary" disabled>Disabled</button>
+          <button class="btn btn-secondary is-loading">Retrying</button>
+        </div></div>
+      <div><div class="demo-label">small, for table rows</div>
+        <div class="row"><button class="btn btn-sm">Retry</button><button class="btn btn-secondary btn-sm">Details</button></div></div>
+    </div>
+  </section>
+
+  <!-- ================= FORMS ================= -->
+  <section class="sec" id="forms">
+    <div class="sec-head">
+      <h2 class="title">Form fields</h2>
+      <p class="caption">Labels are always visible, never placeholder-only. Errors sit next to the field in state red.</p>
+    </div>
+    <div class="two-col">
+      <div class="field">
+        <label class="field-label" for="f-name">Project name</label>
+        <input class="input" id="f-name" value="billing-worker" type="text">
+        <span class="field-hint">Lowercase, no spaces. Shows in Slack alerts.</span>
+      </div>
+      <div class="field">
+        <label class="field-label" for="f-hook">Slack webhook URL</label>
+        <input class="input mono" id="f-hook" type="text" placeholder="https://hooks.slack.com/services/…">
+        <span class="field-hint">Placeholder state. Never store a demo key here.</span>
+      </div>
+      <div class="field">
+        <label class="field-label" for="f-sched">Schedule</label>
+        <input class="input is-focus" id="f-sched" type="text" value="0 3 * * *">
+        <span class="field-hint">Focus state: ring, no layout shift.</span>
+      </div>
+      <div class="field">
+        <label class="field-label" for="f-bad">Webhook URL</label>
+        <input class="input" id="f-bad" type="text" value="not-a-url" aria-invalid="true">
+        <span class="field-error">Enter a full https URL starting with https://hooks.slack.com.</span>
+      </div>
+      <div class="field">
+        <label class="field-label" for="f-dis">API key name</label>
+        <input class="input" id="f-dis" type="text" value="prod-key" disabled>
+        <span class="field-hint">Disabled: dimmed, cursor locked.</span>
+      </div>
+      <div class="field">
+        <label class="field-label" for="f-sel">Alert policy</label>
+        <select class="select" id="f-sel">
+          <option>Alert on failure and missed runs</option>
+          <option>Alert on failure only</option>
+          <option>Muted</option>
+        </select>
+        <span class="field-hint">Native select, styled chevron.</span>
+      </div>
+      <div class="field">
+        <label class="field-label" for="f-area">Notes</label>
+        <textarea class="textarea" id="f-area" placeholder="Who owns this job when it fails at 3am?"></textarea>
+      </div>
+      <div class="demo-grid">
+        <label class="check"><input type="checkbox" checked> Send a recovery message</label>
+        <label class="check"><input type="checkbox"> Include full log excerpt</label>
+        <div class="row">
+          <label class="switch"><input type="checkbox" checked><span class="switch-track"></span> Alerts enabled</label>
+          <label class="switch"><input type="checkbox" disabled><span class="switch-track"></span> <span class="faint">Disabled</span></label>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= STATUS ================= -->
+  <section class="sec" id="status">
+    <div class="sec-head">
+      <h2 class="title">Status</h2>
+      <p class="caption">Shape plus color plus text, never color alone. Identical in tables, tick strips, detail pages, and Slack text.</p>
+    </div>
+    <div class="two-col">
+      <div class="stack">
+        <div class="demo-label">badge (table cells, detail header)</div>
+        <div class="row">
+          <span class="status" data-state="new"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="8" cy="8" r="6"/></svg>New</span>
+          <span class="status" data-state="up"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M5.8 8.1l1.6 1.6 3-3.4"/></svg>Up</span>
+          <span class="status" data-state="late"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="8" cy="8" r="6"/><path d="M8 5.2V8l1.8 1.2"/></svg>Late</span>
+          <span class="status" data-state="down"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"><path d="M5.6 1.8h4.8l3.8 3.8v4.8l-3.8 3.8H5.6L1.8 10.4V5.6z"/></svg>Down</span>
+          <span class="status" data-state="timedout"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="8" cy="8" r="6"/><path d="M8 5.2V8l1.8 1.2"/></svg>Timed out</span>
+        </div>
+      </div>
+      <div class="stack">
+        <div class="demo-label">pill (stat strips, slack previews)</div>
+        <div class="row">
+          <span class="status-pill" data-state="up"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M5.8 8.1l1.6 1.6 3-3.4"/></svg>Up</span>
+          <span class="status-pill" data-state="late"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="8" cy="8" r="6"/><path d="M8 5.2V8l1.8 1.2"/></svg>Late</span>
+          <span class="status-pill" data-state="down"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"><path d="M5.6 1.8h4.8l3.8 3.8v4.8l-3.8 3.8H5.6L1.8 10.4V5.6z"/></svg>Down</span>
+          <span class="status-pill" data-state="new"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="8" cy="8" r="6"/></svg>New</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= TICK STRIP ================= -->
+  <section class="sec" id="ticks">
+    <div class="sec-head">
+      <h2 class="title">Tick strip</h2>
+      <p class="caption">One tick per day. Colored by the worst status that day, hollow when no runs ran. 30 days in the table, 90 on the detail page.</p>
+    </div>
+    <div class="demo-grid">
+      <div><div class="demo-label">30-day strip, healthy with one bad week</div>
+        <div class="tick-strip" role="img" aria-label="30-day run history, mostly up, down on two days">
+          <span class="tick" data-day="up"></span><span class="tick" data-day="up"></span><span class="tick" data-day="up"></span><span class="tick" data-day="up"></span><span class="tick" data-day="late"></span><span class="tick" data-day="up"></span><span class="tick" data-day="up"></span><span class="tick" data-day="down"></span><span class="tick" data-day="down"></span><span class="tick" data-day="up"></span><span class="tick" data-day="up"></span><span class="tick" data-day="up"></span><span class="tick" data-day="up"></span><span class="tick" data-day="none"></span><span class="tick" data-day="none"></span><span class="tick" data-day="up"></span><span class="tick" data-day="up"></span><span class="tick" data-day="up"></span><span class="tick" data-day="up"></span><span class="tick" data-day="up"></span><span class="tick" data-day="up"></span><span class="tick" data-day="up"></span><span class="tick" data-day="late"></span><span class="tick" data-day="up"></span><span class="tick" data-day="up"></span><span class="tick" data-day="up"></span><span class="tick" data-day="up"></span><span class="tick" data-day="up"></span><span class="tick" data-day="up"></span><span class="tick" data-day="up"></span>
+        </div></div>
+      <div><div class="demo-label">new job: no runs yet</div>
+        <div class="tick-strip"><span class="tick" data-day="none"></span><span class="tick" data-day="none"></span><span class="tick" data-day="none"></span><span class="tick" data-day="none"></span><span class="tick" data-day="none"></span><span class="tick" data-day="none"></span><span class="tick" data-day="none"></span><span class="tick" data-day="none"></span></div></div>
+    </div>
+  </section>
+
+  <!-- ================= TABLE ================= -->
+  <section class="sec" id="table">
+    <div class="sec-head">
+      <h2 class="title">Job table</h2>
+      <p class="caption">48px rows, 13px cells, mono tabular numbers. Down, timed-out and late sort to the top. Loading keeps the frame with skeleton rows.</p>
+    </div>
+    <div class="demo-grid">
+      <div><div class="demo-label">populated: urgency sort</div>
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr><th>Status</th><th>Job</th><th>Fails</th><th>Schedule</th><th>Last run</th><th>Next expected</th><th>Avg (7d)</th><th>30 days</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><span class="status" data-state="down"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"><path d="M5.6 1.8h4.8l3.8 3.8v4.8l-3.8 3.8H5.6L1.8 10.4V5.6z"/></svg>Down</span></td>
+              <td><span class="job-name">backup-nightly</span><span class="sub">billing-worker</span></td>
+              <td class="num">3</td><td class="num mono">0 3 * * *</td>
+              <td class="num">02:58:11</td><td class="num">tomorrow 03:00</td><td class="num">42s</td>
+              <td><div class="tick-strip"><span class="tick" data-day="up"></span><span class="tick" data-day="up"></span><span class="tick" data-day="down"></span><span class="tick" data-day="down"></span><span class="tick" data-day="down"></span><span class="tick" data-day="up"></span><span class="tick" data-day="up"></span><span class="tick" data-day="up"></span></div></td>
+            </tr>
+            <tr>
+              <td><span class="status" data-state="late"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="8" cy="8" r="6"/><path d="M8 5.2V8l1.8 1.2"/></svg>Late</span></td>
+              <td><span class="job-name">invoice-reminders</span><span class="sub">billing-worker</span></td>
+              <td class="num">0</td><td class="num mono">*/15 * * * *</td>
+              <td class="num">38 min ago</td><td class="num">overdue 8 min</td><td class="num">6s</td>
+              <td><div class="tick-strip"><span class="tick" data-day="up"></span><span class="tick" data-day="late"></span><span class="tick" data-day="up"></span><span class="tick" data-day="up"></span><span class="tick" data-day="up"></span><span class="tick" data-day="up"></span><span class="tick" data-day="up"></span><span class="tick" data-day="up"></span></div></td>
+            </tr>
+            <tr>
+              <td><span class="status" data-state="up"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M5.8 8.1l1.6 1.6 3-3.4"/></svg>Up</span></td>
+              <td><span class="job-name">db-vacuum</span><span class="sub">billing-worker</span></td>
+              <td class="num">0</td><td class="num mono">0 4 * * 0</td>
+              <td class="num">Sun 04:01:52</td><td class="num">Sun 04:00</td><td class="num">11m</td>
+              <td><div class="tick-strip"><span class="tick" data-day="up"></span><span class="tick" data-day="up"></span><span class="tick" data-day="up"></span><span class="tick" data-day="up"></span><span class="tick" data-day="none"></span><span class="tick" data-day="up"></span><span class="tick" data-day="up"></span><span class="tick" data-day="up"></span></div></td>
+            </tr>
+            <tr>
+              <td><span class="status" data-state="new"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="8" cy="8" r="6"/></svg>New</span></td>
+              <td><span class="job-name">cache-warmup</span><span class="sub">billing-worker</span></td>
+              <td class="num">0</td><td class="num mono">—</td>
+              <td class="num faint">—</td><td class="num faint">—</td><td class="num faint">—</td>
+              <td><div class="tick-strip"><span class="tick" data-day="none"></span><span class="tick" data-day="none"></span><span class="tick" data-day="none"></span><span class="tick" data-day="none"></span><span class="tick" data-day="none"></span><span class="tick" data-day="none"></span><span class="tick" data-day="none"></span><span class="tick" data-day="none"></span></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div></div>
+      <div><div class="demo-label">loading: skeleton rows inside the same frame</div>
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr><th>Status</th><th>Job</th><th>Fails</th><th>Schedule</th><th>Last run</th><th>Next expected</th><th>Avg (7d)</th><th>30 days</th></tr></thead>
+          <tbody>
+            <tr class="is-loading"><td><div class="skeleton" style="width:70px;height:16px"></div></td><td><div class="skeleton" style="width:120px;height:16px"></div></td><td><div class="skeleton" style="width:24px;height:16px"></div></td><td><div class="skeleton" style="width:80px;height:16px"></div></td><td><div class="skeleton" style="width:70px;height:16px"></div></td><td><div class="skeleton" style="width:90px;height:16px"></div></td><td><div class="skeleton" style="width:40px;height:16px"></div></td><td><div class="skeleton" style="width:96px;height:24px"></div></td></tr>
+            <tr class="is-loading"><td><div class="skeleton" style="width:70px;height:16px"></div></td><td><div class="skeleton" style="width:96px;height:16px"></div></td><td><div class="skeleton" style="width:24px;height:16px"></div></td><td><div class="skeleton" style="width:80px;height:16px"></div></td><td><div class="skeleton" style="width:70px;height:16px"></div></td><td><div class="skeleton" style="width:90px;height:16px"></div></td><td><div class="skeleton" style="width:40px;height:16px"></div></td><td><div class="skeleton" style="width:96px;height:24px"></div></td></tr>
+          </tbody>
+        </table>
+      </div></div>
+      <div><div class="demo-label">empty: frame stays, one CTA</div>
+      <div class="table-wrap"><div class="empty">
+        <div class="empty-title">No jobs in this project yet</div>
+        <div class="empty-body">Create a project, copy the API key into the snippet on the docs page, and your first ping registers the job.</div>
+        <button class="btn">Read the docs</button>
+      </div></div></div>
+    </div>
+  </section>
+
+  <!-- ================= STAT STRIP ================= -->
+  <section class="sec" id="stats">
+    <div class="sec-head">
+      <h2 class="title">Stat strip</h2>
+      <p class="caption">Every number names its window. Zeros print as zeros, missing values as a grey dash.</p>
+    </div>
+    <div class="stat-strip">
+      <div class="stat"><span class="stat-label">Status</span><span class="stat-value"><span class="status" data-state="down"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"><path d="M5.6 1.8h4.8l3.8 3.8v4.8l-3.8 3.8H5.6L1.8 10.4V5.6z"/></svg>Down</span></span><span class="stat-window">since 02:58, 3 fails in a row</span></div>
+      <div class="stat"><span class="stat-label">Success rate</span><span class="stat-value mono tabular">90%</span><span class="stat-window">last 30 days</span></div>
+      <div class="stat"><span class="stat-label">p95 duration</span><span class="stat-value mono tabular">58s</span><span class="stat-window">last 7 days</span></div>
+      <div class="stat"><span class="stat-label">Executions</span><span class="stat-value mono tabular">0</span><span class="stat-window">last 24 hours</span></div>
+      <div class="stat"><span class="stat-label">Alerts sent</span><span class="stat-value mono tabular">1</span><span class="stat-window">this incident</span></div>
+      <div class="stat"><span class="stat-label">Next expected</span><span class="stat-value mono tabular faint">—</span><span class="stat-window">no schedule set</span></div>
+    </div>
+  </section>
+
+  <!-- ================= BANNERS ================= -->
+  <section class="sec" id="banners">
+    <div class="sec-head">
+      <h2 class="title">Banners</h2>
+      <p class="caption">Full hairline border plus tint. Never a one-sided accent border.</p>
+    </div>
+    <div class="stack">
+      <div class="banner banner-info">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+        <div class="banner-body"><span class="banner-title">Alerts are not configured</span><span class="muted">Add a Slack webhook in settings and failures will ping you the minute they happen.</span></div>
+        <button class="btn btn-secondary btn-sm">Open settings</button>
+      </div>
+      <div class="banner banner-warning">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+        <div class="banner-body"><span class="banner-title">Slack webhook is unhealthy</span><span>3 alerts could not be delivered. The check tick keeps retrying for 24 hours.</span></div>
+        <button class="btn btn-secondary btn-sm">Test webhook</button>
+      </div>
+      <div class="banner banner-danger">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+        <div class="banner-body"><span class="banner-title">The monitor has not checked in for 47 minutes</span><span>Missed-run detection is paused. Nothing is being watched right now.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= MODAL ================= -->
+  <section class="sec" id="modal">
+    <div class="sec-head">
+      <h2 class="title">Modal</h2>
+      <p class="caption">Centered, the only surface with a shadow. The key show-once modal is the one place a secret ever appears in full.</p>
+    </div>
+    <div class="row">
+      <button class="btn" id="open-key-modal">Show key modal</button>
+      <button class="btn btn-secondary" id="open-confirm-modal">Show confirm dialog</button>
+    </div>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-header"><span class="card-title">Static preview: show-once key</span></div>
+        <div class="modal-body">
+          <div class="key-row"><span>cjo_live_9f2ad41c77b0e5d3</span><button class="btn btn-secondary btn-sm" data-copy="cjo_live_9f2ad41c77b0e5d3">Copy</button></div>
+          <span class="caption">Copy it now. It cannot be recovered later; revoke and create a new one if you lose it.</span>
+          <label class="check"><input type="checkbox"> I have copied the key</label>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Static preview: confirm revoke</span></div>
+        <div class="modal-body">
+          <p style="margin:0">Revoke the key <span class="code-inline">prod-key</span>? Jobs using it start failing their pings with 401 immediately.</p>
+          <div class="modal-actions" style="margin-top:0">
+            <button class="btn btn-text">Keep key</button>
+            <button class="btn btn-danger">Revoke key</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= TOAST ================= -->
+  <section class="sec" id="toast">
+    <div class="sec-head">
+      <h2 class="title">Toast</h2>
+      <p class="caption">Bottom right, one at a time, dismissible. The verb on the button matches the verb in the toast.</p>
+    </div>
+    <div class="row">
+      <button class="btn btn-secondary" id="show-toast-ok">Show success</button>
+      <button class="btn btn-secondary" id="show-toast-err">Show error</button>
+    </div>
+    <div class="stack" style="max-width:360px">
+      <div class="toast toast-success">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        <span>Webhook saved. Test message sent.</span>
+      </div>
+      <div class="toast toast-error">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        <span>Slack rejected the webhook (HTTP 404). Check the URL.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CODE ================= -->
+  <section class="sec" id="code">
+    <div class="sec-head">
+      <h2 class="title">Code block</h2>
+      <p class="caption">The hero snippet from flow 1. Copy button always visible, never hover-only.</p>
+    </div>
+    <div class="code">
+      <div class="code-header"><span>Wrap a job</span><button class="btn btn-text btn-sm" data-copy="const { cron } = require('@cron-observatory/sdk');">Copy</button></div>
+      <pre><code><span class="tok-kw">const</span> { cron } = <span class="tok-fn">require</span>(<span class="tok-str">'@cron-observatory/sdk'</span>);
+
+cron.<span class="tok-fn">wrap</span>(<span class="tok-str">'backup-nightly'</span>, <span class="tok-kw">async</span> () => {
+  <span class="tok-kw">await</span> <span class="tok-fn">runBackup</span>();
+});</code></pre>
+    </div>
+    <div style="margin-top:16px"><div class="demo-label">failed log excerpt</div>
+      <pre class="log"><span class="log-ok">[03:00:07] start ping accepted, job backup-nightly</span>
+[03:00:41] pg_dump: error: connection to server at "db.internal" failed
+<span class="log-err">[03:00:41] FATAL: password authentication failed for user "backup"</span>
+<span class="log-err">[03:00:41] finish ping: error, duration 34s</span></pre>
+    </div>
+  </section>
+
+  <!-- ================= EMPTY / SKELETON ================= -->
+  <section class="sec" id="empty">
+    <div class="sec-head">
+      <h2 class="title">Empty states and skeletons</h2>
+      <p class="caption">Empty sections keep their frame. Loading uses skeletons on data the user already asked for, never spinners where a number belongs.</p>
+    </div>
+    <div class="two-col">
+      <div class="empty">
+        <div class="empty-title">Waiting for the first ping</div>
+        <div class="empty-body">Paste the snippet above into your job and run it once. The first start ping registers the job here.</div>
+        <button class="btn">Copy snippet</button>
+      </div>
+      <div class="stack">
+        <div class="demo-label">skeleton blocks</div>
+        <div class="skeleton" style="width:60%;height:20px"></div>
+        <div class="skeleton" style="width:100%;height:48px"></div>
+        <div class="skeleton" style="width:40%;height:14px"></div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- live modal demo -->
+<div class="modal-backdrop" id="modal-demo" data-hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-demo-title">
+    <div class="modal-title" id="modal-demo-title">API key created</div>
+    <div class="modal-body">
+      <div class="key-row"><span>cjo_live_9f2ad41c77b0e5d3</span><button class="btn btn-secondary btn-sm" data-copy="cjo_live_9f2ad41c77b0e5d3">Copy</button></div>
+      <span class="caption">Copy it now. It cannot be recovered later.</span>
+      <label class="check"><input type="checkbox"> I have copied the key</label>
+      <div class="modal-actions"><button class="btn" id="close-modal-demo">Done</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast-stack" id="toast-stack" aria-live="polite"></div>
+
+<script>
+  // gallery demo behavior only, not part of the component system
+  document.querySelectorAll("[data-copy]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      navigator.clipboard.writeText(btn.getAttribute("data-copy")).catch(function () {});
+      var label = btn.textContent;
+      btn.textContent = "Copied";
+      setTimeout(function () { btn.textContent = label; }, 1200);
+    });
+  });
+
+  var backdrop = document.getElementById("modal-demo");
+  document.getElementById("open-key-modal").addEventListener("click", function () {
+    backdrop.removeAttribute("data-hidden");
+  });
+  document.getElementById("open-confirm-modal").addEventListener("click", function () {
+    document.getElementById("modal-demo-title").textContent = "Revoke this key?";
+    backdrop.removeAttribute("data-hidden");
+  });
+  document.getElementById("close-modal-demo").addEventListener("click", function () {
+    backdrop.setAttribute("data-hidden", "");
+  });
+  backdrop.addEventListener("click", function (e) {
+    if (e.target === backdrop) backdrop.setAttribute("data-hidden", "");
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") backdrop.setAttribute("data-hidden", "");
+  });
+
+  function pushToast(kind, text) {
+    var stack = document.getElementById("toast-stack");
+    var el = document.createElement("div");
+    el.className = "toast toast-" + kind;
+    el.setAttribute("data-enter", "");
+    el.innerHTML = (kind === "success"
+      ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>'
+      : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>')
+      + "<span>" + text + "</span>";
+    stack.appendChild(el);
+    requestAnimationFrame(function () { requestAnimationFrame(function () { el.removeAttribute("data-enter"); }); });
+    setTimeout(function () {
+      el.setAttribute("data-enter", "");
+      setTimeout(function () { el.remove(); }, 260);
+    }, 3600);
+  }
+  document.getElementById("show-toast-ok").addEventListener("click", function () {
+    pushToast("success", "Recovery message sent. backup-nightly is green again.");
+  });
+  document.getElementById("show-toast-err").addEventListener("click", function () {
+    pushToast("error", "Slack rejected the webhook (HTTP 404). Check the URL.");
+  });
+</script>
+</body>
+</html>
