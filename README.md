@@ -1,2 +1,82 @@
-# cron-observatory
-Tiny SDK plus dashboard that watches your cron jobs: last/next run, failures, durations, Slack alerts on misses.
+# Cron Job Observatory
+
+Know the minute a cron job fails, not when customers tell you.
+
+A tiny Node SDK wraps your cron job and pings this service on start,
+success, and failure. The dashboard shows every job's status, last
+run, next expected run, and average duration. Missed runs and stuck
+runs are detected by a check tick, and Slack gets exactly one message
+per incident until the job recovers.
+
+Free in v1, no card. MIT-licensed SDK.
+
+## Quickstart (under 5 minutes)
+
+1. Clone, install, run locally:
+   ```sh
+   npm install
+   cp .env.example .env   # fill in your Supabase project
+   npm run dev
+   ```
+2. Create a Supabase project, run `supabase/migrations/0001_schema.sql`,
+   `0002_rpc.sql`, and `0003_rpc_alerts.sql` in the SQL editor, in order.
+   Create a Vault secret named `webhook_enc_key` (any long random
+   string) for Slack webhook encryption.
+3. Sign in with a magic link, create a project, copy the API key.
+4. Wrap a job:
+   ```js
+   import { wrap } from "./sdk/index.js";
+   await wrap("nightly-backup", { schedule: "0 3 * * *", timezone: "Asia/Karachi" }, runBackup);
+   ```
+   With `CRON_API_KEY` and `CRON_BASE_URL` set in the job's environment.
+5. Watch the dashboard fill in. Save a Slack webhook in Settings and
+   send a test message to wire up alerts.
+
+## Deploy
+
+Vercel for the app, Supabase for Postgres + Auth. Set the env vars
+from `.env.example` on Vercel, then run `supabase/pg_cron_setup.sql`
+in the SQL editor (it needs the live app URL and the same
+`CRON_SECRET` stored in Vault as `cron_check_secret`). Before the
+first sign-in, set the Supabase site URL and redirect URLs to the
+live domain, and configure custom SMTP (the built-in sender only
+reaches team addresses).
+
+## How it works
+
+- Ingest: `POST /v1/runs/start` and `POST /v1/runs/finish`, authed by
+  a per-project API key (SHA-256 hash stored, raw key shown once).
+  Pings are idempotent by `run_uuid`; per-key rate limit 60/min.
+- Detection: pg_cron wakes `POST /api/cron/check` every 60s. The tick
+  compares each job's expected run (cron expression + IANA timezone,
+  or interval) against actual pings: inside grace is Late, past grace
+  is Down with one missed alert; a start with no finish past
+  max_runtime is Timed-out. A start ping resolves an open missed
+  alert; a successful finish resolves the rest and sends one
+  recovery message.
+- Alerts: claim-then-send, so a crashed isolate never double-sends
+  and never loses an alert row. Unsent alerts are retried by the
+  tick with backoff, and give up after 24 hours. Slack webhook URLs
+  are encrypted with pgcrypto and a Vault key.
+- Retention: success runs 30 days, failure runs 90 days, enforced by
+  a daily pg_cron purge. Free-tier limits: 10 jobs per account.
+
+## Repo layout
+
+- `app/` — Next.js 16 App Router (plain JS). `app/v1/` is ingest,
+  `app/api/` is the dashboard API plus the cron check and health.
+- `lib/` — cron math (hand-rolled over Intl), state derivation,
+  ingest, detection tick, Slack sender, validation, key hashing.
+- `sdk/` — the zero-dependency Node wrapper (`wrap`).
+- `supabase/migrations/` — schema, webhook RPCs, alert-claim RPCs.
+- `supabase/pg_cron_setup.sql` — deploy-time pg_cron jobs (check
+  tick + retention purge). Not a migration: run by hand with real values.
+- `scripts/seed-demo.mjs` — seeds the demo project (30 days of runs).
+- `test/` — `node:test`, zero dependencies. Run with `npm test`.
+
+## Docs
+
+- `PLAN.md` — product plan, state model, ADRs, risk register.
+- `DESIGN.md` / `DESIGN-COPY.md` — design direction and screen blueprints.
+- `QA.md` — backend QA checklist (endpoint-by-endpoint).
+- `SECURITY.md` — OWASP-basics checklist.
