@@ -1,0 +1,1 @@
+{"description":"Tiny wrapper that pings Cron Job Observatory when a cron job starts, succeeds, or fails.","license":"MIT","main":"index.js","name":"cron-observatory-sdk","type":"module","version":"0.1.0"}
