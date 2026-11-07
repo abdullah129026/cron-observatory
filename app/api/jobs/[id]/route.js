@@ -7,8 +7,7 @@ import { readJson, ok, err, routeError } from "@/lib/http.js";
 import { optInt, optString, reqString } from "@/lib/validate.js";
 import { parseCron, isValidTimezone } from "@/lib/cronmath.js";
 import { isConfigured } from "@/lib/db.js";
-import { statusFor } from "@/lib/jobview.js";
-import { percentile, withSyntheticMissed } from "@/lib/state.js";
+import { getJobDetail } from "@/lib/jobdetail.js";
 import { InputError } from "@/lib/http.js";
 
 function scheduleFields(body) {
@@ -44,33 +43,8 @@ export async function GET(req, { params }) {
     const store = createStore();
     const { id } = await params;
     const { job } = await requireOwnJob(store, user.id, id);
-    const now = new Date();
-    const since30d = new Date(now.getTime() - 30 * 86400000).toISOString();
-    const window = await store.listRunsInWindow(job.id, since30d);
-    const finished = window.filter((r) => r.status === "success" || r.status === "failed");
-    const durations = window.filter((r) => r.status === "success" && r.duration_ms != null)
-      .map((r) => r.duration_ms);
-    const openAlerts = await store.listAlertsForJob(job.id, 100);
-    const openCount = openAlerts.filter((a) => !a.resolved_at).length;
-    const lastRun = (await store.listRunsForJob(job.id, 1, 0)).rows[0] ?? null;
-    const running = window.some((r) => r.status === "running");
-    const { status, nextExpected } = statusFor(job, {
-      lastRun,
-      hasFinishedRun: window.some((r) => r.status !== "running"),
-      openAlertKind: openAlerts.find((a) => !a.resolved_at)?.kind ?? null,
-      hasRunningRun: running,
-    }, now);
-    return ok({
-      job,
-      status,
-      next_expected_run: nextExpected?.toISOString() ?? null,
-      stats: {
-        success_rate_30d: finished.length ? finished.filter((r) => r.status === "success").length / finished.length : null,
-        p95_duration_ms_30d: percentile(durations, 0.95),
-        executions_30d: window.length,
-        open_alerts: openCount,
-      },
-    });
+    const detail = await getJobDetail(store, job, new Date());
+    return ok({ job, ...detail });
   } catch (e) {
     return routeError(e);
   }
