@@ -9,6 +9,7 @@ import RadarMark from "../components/RadarMark.js";
 import CodeBlock from "../components/CodeBlock.js";
 import TickStrip, { HollowStrip } from "../components/TickStrip.js";
 import StatusBadge from "../components/StatusBadge.js";
+import QueryToast from "../components/QueryToast.js";
 import { createStore } from "@/lib/store.js";
 import { isConfigured } from "@/lib/db.js";
 import { failureMessage } from "@/lib/slack.js";
@@ -63,6 +64,7 @@ export default async function Home() {
   return (
     <>
       <Topbar variant="landing" />
+      <QueryToast />
       <main className="wrap">
         <section className="hero">
           <h1 className="display">Know the minute a cron job fails.</h1>
