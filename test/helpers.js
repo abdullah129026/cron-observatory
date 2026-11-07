@@ -3,6 +3,7 @@
 // (job, kind), atomic send claims. The SQL itself is verified
 // against live Supabase at deploy (phase-6).
 import crypto from "node:crypto";
+import { tickStrip } from "../lib/state.js";
 
 export function createMemoryStore() {
   const projects = [];
@@ -171,6 +172,26 @@ export function createMemoryStore() {
           hasRunningRun: jobRuns.some((r) => r.status === "running"),
         };
       });
+    },
+
+    async getDemoStrip() {
+      const project = projects.find((p) => p.name === "demo" && !p.deleted_at) ?? null;
+      if (!project) return null;
+      const job = jobs.find((j) => j.project_id === project.id && j.name === "nightly-backup" && !j.deleted_at) ?? null;
+      if (!job) return null;
+      const since = new Date(Date.now() - 30 * 86400000).toISOString();
+      const jobRuns = runs.filter((r) => r.job_id === job.id && r.started_at >= since);
+      const missed = alerts.filter((a) => a.job_id === job.id && a.kind === "missed" && a.created_at >= since);
+      const failed = jobRuns.filter((r) => r.status === "failed")
+        .sort((a, b) => new Date(b.started_at) - new Date(a.started_at))[0] ?? null;
+      const alert = alerts.filter((a) => a.job_id === job.id && a.kind === "failure")
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0] ?? null;
+      return {
+        jobName: job.name,
+        strip: tickStrip(jobRuns, missed, 30, new Date()),
+        failure: failed,
+        alert,
+      };
     },
   };
 }
