@@ -5,7 +5,7 @@
 export const dynamic = "force-dynamic";
 import Link from "next/link";
 import Topbar from "../components/Topbar.js";
-import RadarMark from "../components/RadarMark.js";
+import Footer from "../components/Footer.js";
 import CodeBlock from "../components/CodeBlock.js";
 import TickStrip, { HollowStrip } from "../components/TickStrip.js";
 import StatusBadge from "../components/StatusBadge.js";
@@ -181,16 +181,7 @@ export default async function Home() {
           <Link href="/docs" className="btn">Read the docs</Link>
         </section>
       </main>
-      <footer className="footer">
-        <span className="brand"><RadarMark size={16} />Cron Job Observatory</span>
-        <nav>
-          <Link href="/docs">Docs</Link>
-          <Link href="/terms">Terms</Link>
-          <Link href="/privacy">Privacy</Link>
-          <a href="https://github.com/abdullah129026/cron-observatory">GitHub</a>
-        </nav>
-        <span>Free in v1, no card.</span>
-      </footer>
+      <Footer />
     </>
   );
 }
