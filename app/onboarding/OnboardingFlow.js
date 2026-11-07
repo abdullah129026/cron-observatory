@@ -7,8 +7,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import KeyModal from "../components/KeyModal.js";
-import SnippetCard from "../components/SnippetCard.js";
+import KeyModal from "@/components/KeyModal.js";
+import SnippetCard from "@/components/SnippetCard.js";
 
 export default function OnboardingFlow({ initialStep, project }) {
   const router = useRouter();
