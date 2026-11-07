@@ -74,6 +74,9 @@
 
 /* ---------- misc ---------- */
 
+.docs p { font-size: 16px; }
+.docs .step-body p { font-size: var(--text-body); }
+
 .mono { font-family: var(--font-mono); }
 .dash { color: var(--ink-3); }
 .row-actions { display: flex; gap: 8px; align-items: center; }
