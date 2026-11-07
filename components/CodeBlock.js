@@ -1,3 +1,5 @@
+"use client";
+
 // Code block with a header and a Copy button. Children is the raw
 // code text; pass pre-highlighted nodes via `nodes` when the snippet
 // needs token colors.

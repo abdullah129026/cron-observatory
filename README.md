@@ -32,6 +32,22 @@ Free in v1, no card. MIT-licensed SDK.
 5. Watch the dashboard fill in. Save a Slack webhook in Settings and
    send a test message to wire up alerts.
 
+## Pages
+
+- `/` landing, with a live demo strip from the seeded demo project.
+- `/login` magic-link sign-in. `/onboarding` creates the first project,
+  shows the API key once, and hands over the setup snippet.
+- `/dashboard` jobs table, urgency-sorted (Down, Timed-out, Late, then
+  name), with the 30-day tick strip per job.
+- `/jobs/[id]` run history with synthetic missed rows, alert history,
+  p50 duration chart, schedule settings, and the danger zone.
+- `/docs` install, wrap, options, failure and logs, missed runs,
+  limits, and SDK removal.
+- `/settings` projects, API keys, Slack webhook, monitor status, data
+  export, and account delete (typed DELETE, two steps).
+- `/terms`, `/privacy` layout only; content is generated then
+  human-reviewed before launch.
+
 ## Deploy
 
 Vercel for the app, Supabase for Postgres + Auth. Set the env vars
