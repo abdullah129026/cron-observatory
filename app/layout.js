@@ -1,6 +1,8 @@
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "../design-system/tokens.css";
 import "../design-system/components.css";
+import "./layout.css";
+import ToastStack from "../components/Toasts.js";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono" });
@@ -13,7 +15,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${inter.variable} ${mono.variable}`}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <ToastStack />
+      </body>
     </html>
   );
 }
