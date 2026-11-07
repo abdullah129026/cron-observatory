@@ -4,6 +4,9 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { createStore } from "@/lib/store.js";
+import { isConfigured } from "@/lib/db.js";
+import { event } from "@/lib/log.js";
 
 export async function GET(request) {
   const url = new URL(request.url);
@@ -29,5 +32,15 @@ export async function GET(request) {
   );
   const { error } = await supabase.auth.exchangeCodeForSession(code);
   if (error) return NextResponse.redirect(`${origin}/login?error=link`);
+  // First completed sign-in: the account has no projects yet.
+  // Analytics only; a failure here must never break the sign-in.
+  try {
+    const { data } = await supabase.auth.getUser();
+    if (data?.user && isConfigured()) {
+      const store = createStore();
+      const projects = await store.listProjectsByOwner(data.user.id);
+      if (projects.length === 0) event("signup_completed", { user_id: data.user.id });
+    }
+  } catch { /* ignore */ }
   return NextResponse.redirect(`${origin}${next}`);
 }
