@@ -29,7 +29,13 @@ async function loadDemo() {
   if (!isConfigured()) return { demo: null, failed: false };
   try {
     const store = createStore();
-    const demo = await store.getDemoStrip();
+    // The landing page must render even when the database is slow:
+    // 3s, then the spec'd "Demo strip unavailable" caption instead
+    // of a stalled public page (the 10s client cap is the backstop).
+    const demo = await Promise.race([
+      store.getDemoStrip(),
+      new Promise((_, reject) => setTimeout(() => reject(new Error("demo timeout")), 3000)),
+    ]);
     return { demo, failed: false };
   } catch {
     return { demo: null, failed: true };
