@@ -18,13 +18,22 @@ export async function proxy(request) {
   let response = NextResponse.next({ request });
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!url || !anon) return response;
   if (PROTECTED.some((re) => re.test(request.nextUrl.pathname))) {
-    const ref = new URL(url).hostname.split(".")[0];
-    if (!request.cookies.has(`sb-${ref}-auth-token`)) {
+    // Fast gate on cookie presence, so signed-out requests redirect
+    // before any byte renders. With env set, the cookie name carries
+    // the project ref; without env, any Supabase auth cookie passes
+    // and the page itself verifies the session, so the gate still
+    // holds on an unconfigured deploy instead of flashing app chrome
+    // behind a meta refresh.
+    const ref = url ? new URL(url).hostname.split(".")[0] : null;
+    const hasSession = ref
+      ? request.cookies.has(`sb-${ref}-auth-token`)
+      : request.cookies.getAll().some((c) => /^sb-.*-auth-token(\.\d+)?$/.test(c.name));
+    if (!hasSession) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
   }
+  if (!url || !anon) return response;
   const supabase = createServerClient(url, anon, {
     cookies: {
       getAll() { return request.cookies.getAll(); },
