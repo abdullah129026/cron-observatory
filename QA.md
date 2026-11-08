@@ -74,6 +74,52 @@ Supabase project with the migrations applied.
 - [ ] With the server down, `wrap` logs a diagnostic and the job's
       return value is unchanged.
 
+## Frontend QA checklist (phase-5)
+
+Run against the production server (`npm run build && npm run start`).
+Public screens screenshot at 375/768/1440 with headless Chromium
+(`work/pw/shots3.js`, shots in `work/shots/`). No horizontal overflow
+on any public page at any width; no console errors except the expected
+404 resource message on the not-found page.
+
+Viewed 2026-11-08: landing 375/768/1440, docs 375/1440, terms 1440,
+login invalid-email and send-failure states, focus ring on the landing
+brand link, not-found at 375. Privacy uses the same legal layout as
+terms; login/docs/not-found at the other widths are covered by the
+overflow check, not a viewed screenshot.
+
+- [x] `GET /` renders in 3.2s against a hung database with the caption
+      "Demo strip unavailable" (was: hung indefinitely; fixed with a
+      3s race in `app/page.js` and a 10s fetch cap in `lib/db.js`).
+- [x] Signed-out `/dashboard`, `/settings`, `/onboarding`, `/jobs/[id]`
+      return 307 to `/login` with and without Supabase env vars (was:
+      200 plus a meta refresh and a flash of app chrome when env was
+      unset; fixed in `proxy.js`).
+- [x] `--new` is `#9CA3AF` (7.7:1 on `--bg`), not `#6B7280` (4.0:1,
+      failed WCAG AA for the New badge text).
+- [x] Table rows are 56px on touch (`@media (pointer: coarse)`),
+      48px on desktop.
+- [x] Login with an invalid email shows "Enter a valid email address."
+      inline with a red field border; a send failure shows the banner
+      "Could not send the link. Try again." with the form intact.
+- [x] Tab focus shows the `--focus` ring (verified on the landing
+      brand link). Modal traps focus, closes on Escape and backdrop
+      click, returns focus (read in `components/Modal.js`).
+- [x] Contrast, computed: ink 16.6:1, ink-2 8.9:1, ink-3 6.3:1,
+      up 10.1:1, late 11.7:1, down 7.0:1, focus 11.7:1 on `--bg`.
+- [x] Motion tokens only: 150/220/300ms, transform and opacity only,
+      reduced motion respected (`components.css`).
+- [x] States matrix, static check: every loading/empty/error cell in
+      DESIGN-COPY section 10 has a matching branch in the page code
+      (skeleton `loading.js` files, waiting-for-first-ping frame,
+      "No runs yet", "No alerts yet", chart "needs at least 2 finished
+      runs", "Job not found" frame, webhook test error copy).
+
+Still open (needs a live Supabase project, phase-6): every signed-in
+screen and state (dashboard table with real jobs, job detail, settings
+cards, onboarding flow, callback, banners, delete modals), the real
+demo strip, and the signed-in screenshot pass.
+
 ## Automated tests
 
 - [ ] `npm test` green (includes the seven preventive tests:
@@ -81,3 +127,4 @@ Supabase project with the migrations applied.
       stuck_run_timeout, alert_dedupe, alert_rearm,
       sdk_never_crashes_job).
 - [ ] `npm run build` clean.
+
