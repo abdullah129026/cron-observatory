@@ -48,7 +48,7 @@ Everything below is exact. Phase-2 components reference tokens only.
 | `--up` | `#34D399` | state: up (green) |
 | `--late` | `#FBBF24` | state: late (amber) |
 | `--down` | `#F87171` | state: down (red) |
-| `--new` | `#6B7280` | state: new (grey) |
+| `--new` | `#9CA3AF` | state: new (grey; lightened from `#6B7280` in phase-5, which was 4.0:1 on `--bg` and failed WCAG AA for the badge text) |
 | `--focus` | `#7DD3FC` | focus ring only, never data |
 
 Primary action button: filled `--ink` with `#0A0D13` text. Green is

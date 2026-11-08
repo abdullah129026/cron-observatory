@@ -236,7 +236,7 @@ body {
   white-space: nowrap;
 }
 .status-pill svg { width: 12px; height: 12px; flex: none; }
-.status-pill[data-state="new"] { color: var(--new); background: var(--new-tint); border-color: rgba(107, 114, 128, 0.4); }
+.status-pill[data-state="new"] { color: var(--new); background: var(--new-tint); border-color: rgba(156, 163, 175, 0.4); }
 .status-pill[data-state="up"] { color: var(--up); background: var(--up-tint); border-color: rgba(52, 211, 153, 0.4); }
 .status-pill[data-state="late"] { color: var(--late); background: var(--late-tint); border-color: rgba(251, 191, 36, 0.4); }
 .status-pill[data-state="down"] { color: var(--down); background: var(--down-tint); border-color: rgba(248, 113, 113, 0.4); }
@@ -288,6 +288,10 @@ body {
   .table tbody tr:hover, .table tbody tr.is-hover { background: var(--raised); }
 }
 .table tbody tr.is-selected { background: var(--focus-tint); }
+/* touch row pitch is 56px (DESIGN.md); desktop stays 48px */
+@media (pointer: coarse) {
+  .table td { height: 56px; }
+}
 .table .num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .table .job-name { font-weight: var(--weight-strong); color: var(--ink); }
 .table .sub { display: block; font-size: var(--text-caption); color: var(--ink-3); font-weight: var(--weight-body); }
