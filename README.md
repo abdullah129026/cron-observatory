@@ -45,18 +45,18 @@ Free in v1, no card. MIT-licensed SDK.
   limits, and SDK removal.
 - `/settings` projects, API keys, Slack webhook, monitor status, data
   export, and account delete (typed DELETE, two steps).
-- `/terms`, `/privacy` layout only; content is generated then
-  human-reviewed before launch.
+- `/terms`, `/privacy` real content, written against the actual data
+  inventory and retention windows; human-reviewed before launch.
 
 ## Deploy
 
-Vercel for the app, Supabase for Postgres + Auth. Set the env vars
-from `.env.example` on Vercel, then run `supabase/pg_cron_setup.sql`
-in the SQL editor (it needs the live app URL and the same
-`CRON_SECRET` stored in Vault as `cron_check_secret`). Before the
-first sign-in, set the Supabase site URL and redirect URLs to the
-live domain, and configure custom SMTP (the built-in sender only
-reaches team addresses).
+Vercel for the app, Supabase for Postgres + Auth. The full click-by-click
+guide is `DEPLOY.md`: Supabase project, migrations, Vault secrets,
+Vercel env vars, site-URL audit, custom SMTP, pg_cron setup, demo seed,
+uptime monitor, backups, and the verification sweep. Before the first
+sign-in, set the Supabase site URL and redirect URLs to the live
+domain, and configure custom SMTP (the built-in sender only reaches
+team addresses).
 
 ## How it works
 
@@ -93,6 +93,8 @@ reaches team addresses).
 ## Docs
 
 - `PLAN.md` — product plan, state model, ADRs, risk register.
+- `DEPLOY.md` — click-by-click deploy guide, backups, rollback plan.
+- `CHANGELOG.md` — release notes.
 - `DESIGN.md` / `DESIGN-COPY.md` — design direction and screen blueprints.
 - `QA.md` — backend QA checklist (endpoint-by-endpoint).
 - `SECURITY.md` — OWASP-basics checklist.
