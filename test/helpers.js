@@ -128,6 +128,43 @@ export function createMemoryStore() {
       return alerts.filter((a) => a.project_id === projectId && !a.sent_at && !a.send_failed).length;
     },
     async getProjectById(id) { return byId(projects, id); },
+    async listProjectsByOwner(ownerId) {
+      return projects.filter((p) => p.owner_id === ownerId && !p.deleted_at);
+    },
+    async listKeysByProject(projectId) {
+      // Metadata only, same columns as the real store: never the hash.
+      return keys.filter((k) => k.project_id === projectId && !k.deleted_at)
+        .map(({ id, name, last_used_at, revoked_at, created_at }) => ({ id, name, last_used_at, revoked_at, created_at }))
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    },
+    async softDeleteProject(id) {
+      const now = new Date().toISOString();
+      const p = byId(projects, id);
+      if (p) { p.deleted_at = now; p.slack_webhook_enc = null; p.slack_enabled = false; }
+      jobs.filter((j) => j.project_id === id && !j.deleted_at).forEach((j) => { j.deleted_at = now; });
+      keys.filter((k) => k.project_id === id && !k.deleted_at).forEach((k) => { k.revoked_at = now; k.deleted_at = now; });
+      webhooks.delete(id);
+    },
+    async exportForOwner(ownerId) {
+      const out = { exported_at: new Date().toISOString(), projects: [] };
+      for (const p of await this.listProjectsByOwner(ownerId)) {
+        const pJobs = jobs.filter((j) => j.project_id === p.id && !j.deleted_at);
+        const jobIds = pJobs.map((j) => j.id);
+        const pRuns = runs.filter((r) => jobIds.includes(r.job_id))
+          .sort((a, b) => new Date(b.started_at) - new Date(a.started_at)).slice(0, 1000);
+        const pAlerts = alerts.filter((a) => jobIds.includes(a.job_id))
+          .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 1000);
+        out.projects.push({
+          ...p, slack_webhook_enc: undefined, slack_webhook_present: webhooks.has(p.id),
+          jobs: pJobs, api_keys: await this.listKeysByProject(p.id), runs: pRuns, alerts: pAlerts,
+        });
+      }
+      return out;
+    },
+    async deleteAccountData(ownerId) {
+      const mine = await this.listProjectsByOwner(ownerId);
+      for (const p of mine) await this.softDeleteProject(p.id);
+    },
     async createProject(ownerId, name) {
       const p = { id: crypto.randomUUID(), owner_id: ownerId, name, slack_webhook_enc: null, slack_enabled: false, slack_test_succeeded_at: null, slack_consecutive_failures: 0, deleted_at: null, created_at: new Date().toISOString() };
       projects.push(p);
